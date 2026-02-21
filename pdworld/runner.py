@@ -1,7 +1,5 @@
 from __future__ import annotations
 
-from dataclasses import asdict
-
 import numpy as np
 
 from pdworld.learners import q_learning_update, sarsa_update
@@ -9,7 +7,7 @@ from pdworld.policies import choose_action
 from pdworld.qtable import QTable
 from pdworld.state_mapping import world_state_to_id
 from pdworld.types import LearnerType, Policy, RunConfig, RunResult
-from pdworld.world import applicable_actions, reset_world
+from pdworld.world import applicable_actions, apply_action, reset_world
 
 
 def policy_for_step(schedule: list[tuple[int, int, Policy]], step: int) -> Policy:
@@ -51,9 +49,7 @@ def run_steps(config: RunConfig) -> RunResult:
         state_id = world_state_to_id(world_state)
         action = choose_action(policy, world_state, state_id, q_table, rng)
 
-        next_world, reward, terminal = (
-            __import__("pdworld.world", fromlist=["apply_action"]).apply_action(world_state, action)
-        )
+        next_world, reward, terminal = apply_action(world_state, action)
         next_state_id = world_state_to_id(next_world)
 
         if config.learner == LearnerType.Q_LEARNING:
