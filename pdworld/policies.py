@@ -7,6 +7,11 @@ from pdworld.types import Action, PDWorldState, Policy
 from pdworld.world import applicable_actions
 
 
+def _rng_action_choice(actions: list[Action], rng: np.random.Generator) -> Action:
+    choice = rng.choice(np.array(actions, dtype=object))
+    return choice.item() if hasattr(choice, "item") else choice
+
+
 def choose_action(
     policy: Policy,
     world_state: PDWorldState,
@@ -23,7 +28,7 @@ def choose_action(
         return Action.PICKUP
 
     if policy == Policy.PRANDOM:
-        return rng.choice(np.array(actions, dtype=object)).item()
+        return _rng_action_choice(actions, rng)
 
     if policy == Policy.PGREEDY:
         return q_table.best_action(state_id, actions, rng)
@@ -35,6 +40,6 @@ def choose_action(
         if rng.random() < 0.8:
             return best
         others = [action for action in actions if action != best]
-        return rng.choice(np.array(others, dtype=object)).item()
+        return _rng_action_choice(others, rng)
 
     raise ValueError(f"Unknown policy: {policy}")

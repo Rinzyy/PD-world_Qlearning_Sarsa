@@ -7,6 +7,8 @@ from pathlib import Path
 
 import numpy as np
 
+if "XDG_CACHE_HOME" not in os.environ:
+    os.environ["XDG_CACHE_HOME"] = tempfile.mkdtemp(prefix="xdg-cache-")
 if "MPLCONFIGDIR" not in os.environ:
     os.environ["MPLCONFIGDIR"] = tempfile.mkdtemp(prefix="mplconfig-")
 

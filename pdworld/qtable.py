@@ -29,7 +29,8 @@ class QTable:
 
         max_val = self.max_value(state_id, applicable_actions)
         best = [action for action in applicable_actions if self.get(state_id, action) == max_val]
-        return rng.choice(np.array(best, dtype=object)).item()
+        choice = rng.choice(np.array(best, dtype=object))
+        return choice.item() if hasattr(choice, "item") else choice
 
     def snapshot(self) -> np.ndarray:
         return self.values.copy()
