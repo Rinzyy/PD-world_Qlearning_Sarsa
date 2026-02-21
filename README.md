@@ -1,44 +1,54 @@
-# PD-World Tabular TD System
+# PD-World Web Explorer
 
-Python implementation of tabular Q-learning and SARSA for the 5x5 PD-World assignment.
+A simple interactive web visualization of the PD-World reinforcement learning assignmnent. This tool lets you experiment with two learning algorithms (Q-Learning and SARSA) and three distinct action selection policies to see how the software agents navigate and learn the underlying world environment.
 
-## Install
+## 🚀 Getting Started
+
+Ensure you have your dependencies installed:
 
 ```bash
 python3 -m pip install -r requirements.txt
 ```
 
-## Run all required experiments
+Start the interactive server locally!
 
 ```bash
-python3 -m pdworld.cli run-all --output /Users/tuyrindy/Desktop/AIClass/artifacts --seeds 7 19
+python3 pdworld/adapters/web/server.py
 ```
 
-## Run one experiment
+Then, open your web browser and navigate to:
+**[http://localhost:8080](http://localhost:8080)**
 
-```bash
-python3 -m pdworld.cli run-exp --exp 2 --seed 7 --output /Users/tuyrindy/Desktop/AIClass/artifacts
-```
+## 🧠 Learning Algorithms Explained
 
-## Regenerate attractive paths (Experiment 2)
+Reinforcement Learning agents learn to make decisions by navigating the grid, taking actions, and updating a "Q-Table" (a lookup table keeping track of the predicted reward or value for a state/action combination). This simulation offers two learning updates:
 
-```bash
-python3 -m pdworld.cli attractive-paths --exp2-dir /Users/tuyrindy/Desktop/AIClass/artifacts/exp2/seed_7
-```
+### 1. Q-Learning
+Q-Learning is an **off-policy** algorithm. When updating the Q-value for the current state and action, it looks ahead at the *next state* and optimistically assumes it will take the *best possible action* (the one with the maximum Q-value), regardless of the current policy.
 
-## Run tests
+### 2. SARSA (State-Action-Reward-State-Action)
+SARSA is an **on-policy** algorithm. When updating the Q-value for the current state and action, it looks at the *next state* and specifically considers the *next action* that the current policy actually chooses to take. It learns based on what the agent will really do, factoring in exploration behavior.
 
-```bash
-pytest -q
-```
+## 🕹️ Action Policies Explained
 
-## Artifacts
+The "Policy" determines how the agent decides what to do at every step. It's a fundamental tradeoff between *Exploiting* (doing what you know works) and *Exploring* (trying new things to see if they're better).
 
-For each run:
+### 1. PRANDOM (Random Policy)
+The agent completely ignores the Q-Table. At every step, it chooses a random valid action.
+- **Use Case:** High exploration, builds the Q-table evenly at the beginning, but never utilizes its knowledge to maximize reward.
 
-- `timeseries.csv` (step, reward, cumulative bank account)
-- `episode_lengths.csv` (operators to terminal per completed episode)
-- `q_<snapshot>.csv` and `q_<snapshot>.png`
-- `metadata.json`
-- `cumulative_reward.png`, `episode_lengths.png`
-- Experiment 2 also writes `attractive_paths_<snapshot>_x{0|1}.png`
+### 2. PGREEDY (Greedy Policy)
+The agent acts completely deterministically (mostly). It looks at the Q-table for its current state and *always* picks the action with the highest expected value. If there's a tie, it chooses randomly among the tied actions.
+- **Use Case:** High exploitation, but it can easily get stuck in a "local maximum" if it hasn't explored the grid enough.
+
+### 3. PEXPLOIT (Exploitation Policy)
+This is an $\epsilon$-greedy approach. 
+- **80% of the time:** It acts greedily (highest Q-value).
+- **20% of the time:** It acts randomly.
+- **Use Case:** The best of both worlds. It heavily leverages its knowledge while still occasionally deviating to explore the map and potentially discover better paths.
+
+## ⚙️ Control Panel Tuning
+
+While running the simulation, you can also modify the learning parameters dynamically:
+- **Alpha ($\alpha$):** The learning rate (e.g., 0.3). Higher values make the agent quickly adopt new information, while lower values make it learn slower but remember older information longer.
+- **Gamma ($\gamma$):** The discount factor (e.g., 0.5). Higher values make the agent care more about long-term future rewards, while lower values make it focus on immediate, short-term rewards.

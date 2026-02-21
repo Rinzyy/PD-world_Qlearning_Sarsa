@@ -1,6 +1,6 @@
 from __future__ import annotations
 
-from pdworld.constants import (
+from pdworld.core.constants import (
     DROPOFF_LOCATIONS,
     DROPOFF_REWARD,
     GRID_SIZE,
@@ -11,7 +11,7 @@ from pdworld.constants import (
     PICKUP_LOCATIONS,
     PICKUP_REWARD,
 )
-from pdworld.types import Action, PDWorldState
+from pdworld.core.types import Action, PDWorldState
 
 _PICKUP_INDEX = {loc: idx for idx, loc in enumerate(PICKUP_LOCATIONS)}
 _DROPOFF_INDEX = {loc: idx for idx, loc in enumerate(DROPOFF_LOCATIONS)}

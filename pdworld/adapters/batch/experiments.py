@@ -3,7 +3,7 @@ from __future__ import annotations
 import json
 from pathlib import Path
 
-from pdworld.analysis import (
+from pdworld.adapters.batch.analysis import (
     generate_exp2_attractive_paths_from_snapshots,
     plot_cumulative_reward,
     plot_episode_lengths,
@@ -12,9 +12,9 @@ from pdworld.analysis import (
     save_q_snapshot_csv,
     save_timeseries_csv,
 )
-from pdworld.constants import DEFAULT_ALPHA, DEFAULT_GAMMA, DEFAULT_SEEDS
-from pdworld.runner import run_steps
-from pdworld.types import LearnerType, Policy, RunConfig, RunResult
+from pdworld.core.constants import DEFAULT_ALPHA, DEFAULT_GAMMA, DEFAULT_SEEDS
+from pdworld.adapters.batch.runner import run_steps
+from pdworld.core.types import LearnerType, Policy, RunConfig, RunResult
 
 
 def get_experiment_config(exp_id: int, seed: int) -> RunConfig:

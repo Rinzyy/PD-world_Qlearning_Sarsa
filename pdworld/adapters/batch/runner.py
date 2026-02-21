@@ -2,12 +2,12 @@ from __future__ import annotations
 
 import numpy as np
 
-from pdworld.learners import q_learning_update, sarsa_update
-from pdworld.policies import choose_action
-from pdworld.qtable import QTable
-from pdworld.state_mapping import world_state_to_id
-from pdworld.types import LearnerType, Policy, RunConfig, RunResult
-from pdworld.world import applicable_actions, apply_action, reset_world
+from pdworld.core.learners import q_learning_update, sarsa_update
+from pdworld.core.policies import choose_action
+from pdworld.core.qtable import QTable
+from pdworld.core.state_mapping import world_state_to_id
+from pdworld.core.types import LearnerType, Policy, RunConfig, RunResult
+from pdworld.core.world import applicable_actions, apply_action, reset_world
 
 
 def policy_for_step(schedule: list[tuple[int, int, Policy]], step: int) -> Policy:

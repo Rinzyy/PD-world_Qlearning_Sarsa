@@ -2,9 +2,9 @@ from __future__ import annotations
 
 import numpy as np
 
-from pdworld.qtable import QTable
-from pdworld.types import Action, PDWorldState, Policy
-from pdworld.world import applicable_actions
+from pdworld.core.qtable import QTable
+from pdworld.core.types import Action, PDWorldState, Policy
+from pdworld.core.world import applicable_actions
 
 
 def _rng_action_choice(actions: list[Action], rng: np.random.Generator) -> Action:

@@ -4,9 +4,9 @@ import argparse
 import json
 from pathlib import Path
 
-from pdworld.analysis import regenerate_exp2_attractive_paths
-from pdworld.constants import DEFAULT_SEEDS
-from pdworld.experiments import run_all_experiments, run_experiment
+from pdworld.adapters.batch.analysis import regenerate_exp2_attractive_paths
+from pdworld.core.constants import DEFAULT_SEEDS
+from pdworld.adapters.batch.experiments import run_all_experiments, run_experiment
 
 
 def build_parser() -> argparse.ArgumentParser:

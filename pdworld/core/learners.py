@@ -1,7 +1,7 @@
 from __future__ import annotations
 
-from pdworld.qtable import QTable
-from pdworld.types import Action
+from pdworld.core.qtable import QTable
+from pdworld.core.types import Action
 
 
 def q_learning_update(

@@ -2,9 +2,9 @@ from __future__ import annotations
 
 import numpy as np
 
-from pdworld.constants import ACTION_TO_INDEX, ACTIONS
-from pdworld.state_mapping import NUM_RL_STATES
-from pdworld.types import Action
+from pdworld.core.constants import ACTION_TO_INDEX, ACTIONS
+from pdworld.core.state_mapping import NUM_RL_STATES
+from pdworld.core.types import Action
 
 
 class QTable:

@@ -1,6 +1,6 @@
 from __future__ import annotations
 
-from pdworld.types import Action
+from pdworld.core.types import Action
 
 GRID_SIZE = 5
 

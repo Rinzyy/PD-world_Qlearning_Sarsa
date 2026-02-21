@@ -1,0 +1,456 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>PD-World Explorer</title>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;800&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --bg-color: #09090b;
+            --panel-bg: rgba(24, 24, 27, 0.6);
+            --panel-bg-hover: rgba(24, 24, 27, 0.8);
+            --border: rgba(255, 255, 255, 0.08);
+            --text-main: #f4f4f5;
+            --text-muted: #a1a1aa;
+            --accent: #e4e4e7;
+            --accent-glow: rgba(255, 255, 255, 0.1);
+            --success: #10b981;
+            --alert: #ef4444;
+            --radius-lg: 16px;
+            --radius-md: 12px;
+            --radius-sm: 8px;
+        }
+
+        body {
+            font-family: 'Inter', -apple-system, blinkmacsystemfont, sans-serif;
+            background: var(--bg-color);
+            background-image: radial-gradient(circle at 50% 0%, rgba(255, 255, 255, 0.03) 0%, transparent 70%);
+            color: var(--text-main);
+            margin: 0;
+            padding: 2rem;
+            min-height: 100vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            letter-spacing: -0.01em;
+            box-sizing: border-box;
+        }
+
+        .dashboard {
+            display: grid;
+            grid-template-columns: 320px 1fr 320px;
+            gap: 1.5rem;
+            max-width: 1400px;
+            width: 100%;
+        }
+
+        .panel {
+            background: var(--panel-bg);
+            backdrop-filter: blur(20px);
+            -webkit-backdrop-filter: blur(20px);
+            border: 1px solid var(--border);
+            border-radius: var(--radius-lg);
+            padding: 2rem;
+            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+            display: flex;
+            flex-direction: column;
+            box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06);
+        }
+
+        .panel:hover {
+            border-color: rgba(255, 255, 255, 0.15);
+            background: var(--panel-bg-hover);
+            box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.1), 0 4px 6px -2px rgba(0, 0, 0, 0.05);
+        }
+
+        h2 {
+            font-size: 1.125rem;
+            font-weight: 600;
+            margin-top: 0;
+            margin-bottom: 2rem;
+            color: var(--text-main);
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+
+        h2::before {
+            content: '';
+            display: inline-block;
+            width: 8px;
+            height: 8px;
+            border-radius: 50%;
+            background: var(--text-main);
+        }
+
+        .grid-container {
+            display: grid;
+            grid-template-columns: repeat(5, 1fr);
+            grid-template-rows: repeat(5, 1fr);
+            gap: 8px;
+            aspect-ratio: 1;
+            width: 100%;
+            max-width: 500px;
+            margin: 0 auto;
+        }
+
+        .cell {
+            background: rgba(255, 255, 255, 0.02);
+            border: 1px solid rgba(255, 255, 255, 0.04);
+            border-radius: var(--radius-md);
+            position: relative;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1.75rem;
+            transition: all 0.3s ease;
+        }
+
+        .cell span {
+            position: absolute;
+            z-index: 10;
+        }
+
+        .agent {
+            font-size: 2.2rem;
+            filter: drop-shadow(0 4px 6px rgba(0, 0, 0, 0.3));
+            z-index: 20 !important;
+            transition: transform 0.3s cubic-bezier(0.34, 1.56, 0.64, 1);
+        }
+
+        .stat-group {
+            margin-bottom: 1.5rem;
+            display: flex;
+            flex-direction: column;
+            gap: 0.25rem;
+        }
+
+        .stat-label {
+            font-size: 0.75rem;
+            color: var(--text-muted);
+            text-transform: uppercase;
+            letter-spacing: 0.05em;
+            font-weight: 600;
+        }
+
+        .stat-value {
+            font-size: 1.5rem;
+            font-weight: 600;
+            color: var(--text-main);
+            font-variant-numeric: tabular-nums;
+        }
+
+        hr {
+            border: 0;
+            border-top: 1px solid var(--border);
+            margin: 1.5rem 0;
+            width: 100%;
+        }
+
+        .btn {
+            background: var(--text-main);
+            color: var(--bg-color);
+            border: 1px solid transparent;
+            padding: 0.875rem 1rem;
+            border-radius: var(--radius-md);
+            font-weight: 500;
+            font-size: 0.875rem;
+            cursor: pointer;
+            width: 100%;
+            margin-bottom: 0.75rem;
+            transition: all 0.2s;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 0.5rem;
+            box-shadow: 0 1px 2px rgba(0, 0, 0, 0.1);
+        }
+
+        .btn:hover {
+            transform: translateY(-1px);
+            opacity: 0.9;
+        }
+
+        .btn:active {
+            transform: translateY(0);
+        }
+
+        .btn-secondary {
+            background: rgba(255, 255, 255, 0.03);
+            color: var(--text-main);
+            border: 1px solid var(--border);
+            box-shadow: none;
+        }
+
+        .btn-secondary:hover {
+            background: rgba(255, 255, 255, 0.08);
+            border-color: rgba(255, 255, 255, 0.2);
+            box-shadow: none;
+        }
+
+        select,
+        input[type="number"] {
+            width: 100%;
+            background: rgba(0, 0, 0, 0.2);
+            border: 1px solid var(--border);
+            color: var(--text-main);
+            padding: 0.75rem;
+            border-radius: var(--radius-sm);
+            margin-bottom: 1.25rem;
+            font-family: inherit;
+            font-size: 0.875rem;
+            transition: all 0.2s;
+            outline: none;
+            box-sizing: border-box;
+            -webkit-appearance: none;
+            appearance: none;
+        }
+
+        select:focus,
+        input[type="number"]:focus {
+            border-color: rgba(255, 255, 255, 0.3);
+            background: rgba(0, 0, 0, 0.4);
+        }
+
+        .controls {
+            display: flex;
+            gap: 8px;
+        }
+
+        .list-items {
+            display: flex;
+            flex-direction: column;
+            gap: 0.5rem;
+            font-size: 0.875rem;
+            color: var(--text-muted);
+        }
+
+        .list-item {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            padding: 0.5rem;
+            background: rgba(255, 255, 255, 0.02);
+            border-radius: var(--radius-sm);
+            border: 1px solid rgba(255, 255, 255, 0.03);
+        }
+    </style>
+</head>
+
+<body>
+    <div class="dashboard">
+        <div class="panel">
+            <h2>Live Stats</h2>
+
+            <div class="stat-group">
+                <div class="stat-label">Episodes Completed</div>
+                <div class="stat-value" id="terminals-stat">0</div>
+            </div>
+
+            <div class="stat-group">
+                <div class="stat-label">Total Steps</div>
+                <div class="stat-value" id="steps-stat">0</div>
+            </div>
+
+            <div class="stat-group">
+                <div class="stat-label">Bank Account (Reward)</div>
+                <div class="stat-value" id="bank-stat">0</div>
+            </div>
+
+            <div class="stat-group">
+                <div class="stat-label">Agent State</div>
+                <div class="stat-value" style="font-size: 1.2rem; color: var(--accent)" id="carrying-stat">
+                    Not Carrying
+                </div>
+            </div>
+
+            <hr>
+
+            <div class="stat-group">
+                <div class="stat-label">Pickups Left</div>
+                <div class="list-items" id="pickups-list"></div>
+            </div>
+
+            <div class="stat-group">
+                <div class="stat-label">Dropoffs Made</div>
+                <div class="list-items" id="dropoffs-list"></div>
+            </div>
+        </div>
+
+        <div class="panel" style="display: flex; flex-direction: column; align-items: center; justify-content: center;">
+            <div class="grid-container" id="grid">
+                <!-- Grid cells generated by JS -->
+            </div>
+            <div
+                style="margin-top: 2rem; display: flex; gap: 1.5rem; color: var(--text-muted); font-size: 0.875rem; justify-content: center; font-weight: 500;">
+                <span style="display: flex; align-items: center; gap: 0.5rem;">🚗 Agent</span>
+                <span style="display: flex; align-items: center; gap: 0.5rem;">📦 Pickup</span>
+                <span style="display: flex; align-items: center; gap: 0.5rem;">🎯 Dropoff</span>
+            </div>
+        </div>
+
+        <div class="panel">
+            <h2>Controls</h2>
+
+            <div class="stat-label">Learning Algorithm</div>
+            <select id="learner" onchange="updateConfig()">
+                <option value="Q_LEARNING">Q-Learning</option>
+                <option value="SARSA">SARSA</option>
+            </select>
+
+            <div class="stat-label">Action Policy</div>
+            <select id="policy" onchange="updateConfig()">
+                <option value="PRANDOM">PRANDOM (Random)</option>
+                <option value="PEXPLOIT">PEXPLOIT (Exploit)</option>
+                <option value="PGREEDY">PGREEDY (Greedy)</option>
+            </select>
+
+            <div class="stat-label">Alpha (Learning Rate)</div>
+            <input type="number" id="alpha" value="0.3" step="0.1" max="1" min="0" onchange="updateConfig()">
+
+            <div class="stat-label">Gamma (Discount)</div>
+            <input type="number" id="gamma" value="0.5" step="0.1" max="1" min="0" onchange="updateConfig()">
+
+            <button class="btn" onclick="step(1)">Step (1x)</button>
+            <div class="controls">
+                <button class="btn btn-secondary" onclick="step(100)">Step (100x)</button>
+                <button class="btn btn-secondary" onclick="step(1000)">Step (1000x)</button>
+            </div>
+
+            <hr style="border: 0; border-top: 1px solid var(--border); margin: 1.5rem 0;">
+            <button class="btn btn-secondary" style="border-color: var(--alert); color: var(--alert)"
+                onclick="resetEnv()">Reset World & Knowledge</button>
+        </div>
+    </div>
+
+    <script>
+        const GRID_SIZE = 5;
+        let pickupsLocations = [];
+        let dropoffsLocations = [];
+
+        function initGrid() {
+            const grid = document.getElementById('grid');
+            grid.innerHTML = '';
+            for (let r = 1; r <= GRID_SIZE; r++) {
+                for (let c = 1; c <= GRID_SIZE; c++) {
+                    const cell = document.createElement('div');
+                    cell.className = 'cell';
+                    cell.id = `cell-${r}-${c}`;
+                    grid.appendChild(cell);
+                }
+            }
+        }
+
+        function updateUI(data) {
+            // Update stats
+            document.getElementById('steps-stat').innerText = data.stats.step;
+            document.getElementById('bank-stat').innerText = data.stats.bank;
+            document.getElementById('terminals-stat').innerText = data.stats.terminals;
+            document.getElementById('carrying-stat').innerText = data.world.carrying ? '📦 Carrying Block' : 'Not Carrying';
+            document.getElementById('carrying-stat').style.color = data.world.carrying ? 'var(--success)' : 'var(--accent)';
+
+            // Set select values
+            document.getElementById('learner').value = data.config.learner;
+            document.getElementById('policy').value = data.config.policy;
+            document.getElementById('alpha').value = data.config.alpha;
+            document.getElementById('gamma').value = data.config.gamma;
+
+            pickupsLocations = data.pickups;
+            dropoffsLocations = data.dropoffs;
+
+            let pl = '';
+            for (let i = 0; i < pickupsLocations.length; i++) {
+                pl += `<div class="list-item"><span>📦 Source ${i + 1}</span> <span><strong style="color:var(--text-main)">${data.world.pickup_counts[i]}</strong> left</span></div>`;
+            }
+            document.getElementById('pickups-list').innerHTML = pl;
+
+            let dl = '';
+            for (let i = 0; i < dropoffsLocations.length; i++) {
+                dl += `<div class="list-item"><span>🎯 Dest ${i + 1}</span> <span><strong style="color:var(--text-main)">${data.world.dropoff_counts[i]}</strong> / 5</span></div>`;
+            }
+            document.getElementById('dropoffs-list').innerHTML = dl;
+
+            // Update Grid
+            for (let r = 1; r <= GRID_SIZE; r++) {
+                for (let c = 1; c <= GRID_SIZE; c++) {
+                    const cell = document.getElementById(`cell-${r}-${c}`);
+                    cell.innerHTML = ''; // clear
+
+                    // Check if it's pickup or dropoff
+                    let isP = pickupsLocations.findIndex(p => p[0] === r && p[1] === c);
+                    if (isP >= 0) {
+                        if (data.world.pickup_counts[isP] > 0) {
+                            let el = document.createElement('span');
+                            el.innerHTML = '📦';
+                            el.style.opacity = '0.3';
+                            cell.appendChild(el);
+                        }
+                    }
+
+                    let isD = dropoffsLocations.findIndex(p => p[0] === r && p[1] === c);
+                    if (isD >= 0) {
+                        let el = document.createElement('span');
+                        el.innerHTML = '🎯';
+                        el.style.opacity = '0.3';
+                        cell.appendChild(el);
+                    }
+
+                    // Render agent
+                    if (r === data.world.row && c === data.world.col) {
+                        let a = document.createElement('span');
+                        a.innerHTML = data.world.carrying ? '🚗📦' : '🚗';
+                        a.className = 'agent';
+                        cell.appendChild(a);
+                    }
+                }
+            }
+        }
+
+        async function fetchState() {
+            const res = await fetch('/api/state');
+            const data = await res.json();
+            updateUI(data);
+        }
+
+        async function step(num) {
+            const res = await fetch('/api/step', {
+                method: 'POST',
+                body: JSON.stringify({ num_steps: num })
+            });
+            const data = await res.json();
+            updateUI(data);
+        }
+
+        async function updateConfig() {
+            const body = {
+                learner: document.getElementById('learner').value,
+                policy: document.getElementById('policy').value,
+                alpha: parseFloat(document.getElementById('alpha').value),
+                gamma: parseFloat(document.getElementById('gamma').value)
+            };
+            const res = await fetch('/api/config', {
+                method: 'POST',
+                body: JSON.stringify(body)
+            });
+            const data = await res.json();
+            updateUI(data);
+        }
+
+        async function resetEnv() {
+            const res = await fetch('/api/reset', {
+                method: 'POST',
+                body: JSON.stringify({ hard: true })
+            });
+            const data = await res.json();
+            updateUI(data);
+        }
+
+        // INIT
+        initGrid();
+        fetchState();
+    </script>
+</body>
+
+</html>

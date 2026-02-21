@@ -17,8 +17,8 @@ import matplotlib
 matplotlib.use("Agg")
 import matplotlib.pyplot as plt
 
-from pdworld.constants import ACTIONS, ACTION_TO_INDEX, GRID_SIZE, MOVE_ACTIONS
-from pdworld.state_mapping import id_to_state, state_to_id
+from pdworld.core.constants import ACTIONS, ACTION_TO_INDEX, GRID_SIZE, MOVE_ACTIONS
+from pdworld.core.state_mapping import id_to_state, state_to_id
 
 
 def save_timeseries_csv(step_rewards: list[int], cumulative_rewards: list[float], output_path: Path) -> None:
