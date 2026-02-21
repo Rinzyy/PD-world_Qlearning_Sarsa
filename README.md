@@ -2,6 +2,8 @@
 
 A simple interactive web visualization of the PD-World reinforcement learning assignmnent. This tool lets you experiment with two learning algorithms (Q-Learning and SARSA) and three distinct action selection policies to see how the software agents navigate and learn the underlying world environment.
 
+<video src="public/demo.mp4" width="100%" controls autoplay loop muted></video>
+
 ## 🚀 Getting Started
 
 Ensure you have your dependencies installed:
