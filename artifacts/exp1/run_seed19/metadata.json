@@ -1,0 +1,36 @@
+{
+  "experiment_id": 1,
+  "seed": 19,
+  "terminal_hits": 35,
+  "episodes_completed": 35,
+  "final_cumulative_reward": 7106.0,
+  "available_snapshots": [
+    "final",
+    "step4000"
+  ],
+  "config": {
+    "alpha": 0.3,
+    "gamma": 0.5,
+    "total_steps": 8000,
+    "seed": 19,
+    "learner": "Q_LEARNING",
+    "schedule": [
+      [
+        1,
+        4000,
+        "PRANDOM"
+      ],
+      [
+        4001,
+        8000,
+        "PGREEDY"
+      ]
+    ],
+    "experiment_id": 1
+  },
+  "snapshot_steps": {
+    "step4000": 4000,
+    "final": 8000
+  },
+  "episode_in_progress_length": 117
+}

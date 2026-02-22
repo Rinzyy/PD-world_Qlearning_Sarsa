@@ -16,19 +16,19 @@ You can execute experiments headlessly using the batch CLI:
 
 **Run a single experiment:**
 ```bash
-python3 pdworld/adapters/batch/cli.py run-exp --exp 1 --seed 7
+python3 -m pdworld.adapters.batch.cli run-exp --exp 1 --seed 7
 ```
 Options:
 - `--exp {1,2,3}`: Experiment ID
-- `--seed`: Random number generator seed (use 7 for this analysis)
+- `--seed`: Random number generator seed (use 7 or 19 for this analysis)
 - `--output`: Artifacts output root directory (default: `artifacts`)
 
 **Run all experiments:**
 ```bash
-python3 pdworld/adapters/batch/cli.py run-all --seeds 7
+python3 -m pdworld.adapters.batch.cli run-all --seeds 7 19
 ```
 Options:
-- `--seeds`: List of RNG seeds (use 7 for this analysis)
+- `--seeds`: List of RNG seeds (use 7 and 19 for this analysis)
 - `--output`: Artifacts output root directory (default: `artifacts`)
 
 All experiment results (such as JSON metadata, run summaries, and CSV tables) are written to the configured output directory.
