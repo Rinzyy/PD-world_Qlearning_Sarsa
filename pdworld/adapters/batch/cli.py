@@ -4,7 +4,6 @@ import argparse
 import json
 from pathlib import Path
 
-from pdworld.adapters.batch.analysis import regenerate_exp2_attractive_paths
 from pdworld.core.constants import DEFAULT_SEEDS
 from pdworld.adapters.batch.experiments import run_all_experiments, run_experiment
 
@@ -21,12 +20,6 @@ def build_parser() -> argparse.ArgumentParser:
     run_exp_parser.add_argument("--exp", type=int, choices=[1, 2, 3], required=True, help="Experiment id")
     run_exp_parser.add_argument("--seed", type=int, required=True, help="RNG seed")
     run_exp_parser.add_argument("--output", type=Path, default=Path("artifacts"), help="Artifacts output root")
-
-    attractive_parser = subparsers.add_parser(
-        "attractive-paths",
-        help="Regenerate Experiment 2 attractive path plots from saved Q snapshots",
-    )
-    attractive_parser.add_argument("--exp2-dir", type=Path, required=True, help="Path to artifacts/exp2/seed_x")
 
     return parser
 
@@ -50,12 +43,6 @@ def cmd_run_exp(args: argparse.Namespace) -> int:
     return 0
 
 
-def cmd_attractive_paths(args: argparse.Namespace) -> int:
-    regenerate_exp2_attractive_paths(args.exp2_dir)
-    print(json.dumps({"status": "ok", "exp2_dir": str(args.exp2_dir)}, indent=2))
-    return 0
-
-
 def main() -> int:
     parser = build_parser()
     args = parser.parse_args()
@@ -64,8 +51,6 @@ def main() -> int:
         return cmd_run_all(args)
     if args.command == "run-exp":
         return cmd_run_exp(args)
-    if args.command == "attractive-paths":
-        return cmd_attractive_paths(args)
 
     parser.error(f"Unknown command: {args.command}")
     return 2

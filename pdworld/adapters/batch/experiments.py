@@ -4,13 +4,10 @@ import json
 from pathlib import Path
 
 from pdworld.adapters.batch.analysis import (
-    generate_exp2_attractive_paths_from_snapshots,
+    export_q_subset_moves,
     plot_cumulative_reward,
     plot_episode_lengths,
-    plot_q_heatmap,
-    save_episode_lengths_csv,
-    save_q_snapshot_csv,
-    save_timeseries_csv,
+    plot_q_triangles_grid,
 )
 from pdworld.core.constants import DEFAULT_ALPHA, DEFAULT_GAMMA, DEFAULT_SEEDS
 from pdworld.adapters.batch.runner import run_steps
@@ -26,7 +23,7 @@ def get_experiment_config(exp_id: int, seed: int) -> RunConfig:
             schedule=[(1, 4000, Policy.PRANDOM), (4001, 8000, Policy.PGREEDY)],
             seed=seed,
             learner=LearnerType.Q_LEARNING,
-            snapshot_steps={"mid": 4000, "final": 8000},
+            snapshot_steps={"step4000": 4000, "final": 8000},
             experiment_id=1,
         )
 
@@ -60,19 +57,8 @@ def get_experiment_config(exp_id: int, seed: int) -> RunConfig:
 
 
 def write_run_artifacts(exp_id: int, seed: int, result: RunResult, output_root: Path) -> Path:
-    run_dir = output_root / f"exp{exp_id}" / f"seed_{seed}"
+    run_dir = output_root / f"exp{exp_id}" / f"run_seed{seed}"
     run_dir.mkdir(parents=True, exist_ok=True)
-
-    save_timeseries_csv(result.step_rewards, result.cumulative_rewards, run_dir / "timeseries.csv")
-    save_episode_lengths_csv(result.episode_lengths, run_dir / "episode_lengths.csv")
-
-    for snapshot_name, q_values in result.q_snapshots.items():
-        save_q_snapshot_csv(q_values, run_dir / f"q_{snapshot_name}.csv")
-        plot_q_heatmap(
-            q_values,
-            run_dir / f"q_{snapshot_name}.png",
-            title=f"Experiment {exp_id}, seed {seed} - Q snapshot: {snapshot_name}",
-        )
 
     plot_cumulative_reward(
         result.cumulative_rewards,
@@ -85,8 +71,21 @@ def write_run_artifacts(exp_id: int, seed: int, result: RunResult, output_root: 
         title=f"Experiment {exp_id}, seed {seed} - Episode Length",
     )
 
-    if exp_id == 2:
-        generate_exp2_attractive_paths_from_snapshots(result.q_snapshots, run_dir)
+    for snapshot_name, q_values in result.q_snapshots.items():
+        # Subset CSVs for both carry=0 and carry=1
+        export_q_subset_moves(q_values, run_dir / f"q_subset_{snapshot_name}_carry0.csv", carrying=0, agg="max")
+        export_q_subset_moves(q_values, run_dir / f"q_subset_{snapshot_name}_carry1.csv", carrying=1, agg="max")
+        
+        # Only output Attractive Paths and Grids for Experment 2 at required checkpoints,
+        # or at least 'final' block for all to be safe. We'll output it for all snapshots requested 
+        # (the config limits Exp 2 to dropoff, terminal, and final).
+        for carrying in (0, 1):
+            plot_q_triangles_grid(
+                q_values,
+                carrying,
+                run_dir / f"attractive_paths_{snapshot_name}_carry{carrying}.png",
+                title=f"Analysis of Attractive Paths ({snapshot_name}, carry={carrying})"
+            )
 
     metadata = {
         "experiment_id": exp_id,
