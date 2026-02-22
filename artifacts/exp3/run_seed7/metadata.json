@@ -1,0 +1,34 @@
+{
+  "experiment_id": 3,
+  "seed": 7,
+  "terminal_hits": 35,
+  "episodes_completed": 35,
+  "final_cumulative_reward": 7092.0,
+  "available_snapshots": [
+    "final"
+  ],
+  "config": {
+    "alpha": 0.3,
+    "gamma": 0.5,
+    "total_steps": 8000,
+    "seed": 7,
+    "learner": "SARSA",
+    "schedule": [
+      [
+        1,
+        200,
+        "PRANDOM"
+      ],
+      [
+        201,
+        8000,
+        "PEXPLOIT"
+      ]
+    ],
+    "experiment_id": 3
+  },
+  "snapshot_steps": {
+    "final": 8000
+  },
+  "episode_in_progress_length": 147
+}

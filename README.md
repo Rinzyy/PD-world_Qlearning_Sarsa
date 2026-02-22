@@ -1,8 +1,6 @@
-# PD-World Web Explorer
+# PD-World Reinforcement Learning
 
-A simple interactive web visualization of the PD-World reinforcement learning assignmnent. This tool lets you experiment with two learning algorithms (Q-Learning and SARSA) and three distinct action selection policies to see how the software agents navigate and learn the underlying world environment.
-
-![Demo](public/demo.png)
+A batch experiment runner for the PD-World reinforcement learning assignment. This software simulates two learning algorithms (Q-Learning and SARSA) and three distinct action selection policies to see how agents navigate and learn the underlying world environment.
 
 ## 🚀 Getting Started
 
@@ -12,14 +10,28 @@ Ensure you have your dependencies installed:
 python3 -m pip install -r requirements.txt
 ```
 
-Start the interactive server locally!
+### Running Experiments
 
+You can execute experiments headlessly using the batch CLI:
+
+**Run a single experiment:**
 ```bash
-python3 pdworld/adapters/web/server.py
+python3 pdworld/adapters/batch/cli.py run-exp --exp 1 --seed 7
 ```
+Options:
+- `--exp {1,2,3}`: Experiment ID
+- `--seed`: Random number generator seed (use 7 for this analysis)
+- `--output`: Artifacts output root directory (default: `artifacts`)
 
-Then, open your web browser and navigate to:
-**[http://localhost:8080](http://localhost:8080)**
+**Run all experiments:**
+```bash
+python3 pdworld/adapters/batch/cli.py run-all --seeds 7
+```
+Options:
+- `--seeds`: List of RNG seeds (use 7 for this analysis)
+- `--output`: Artifacts output root directory (default: `artifacts`)
+
+All experiment results (such as JSON metadata, run summaries, and CSV tables) are written to the configured output directory.
 
 ## 🧠 Learning Algorithms Explained
 
@@ -48,9 +60,3 @@ This is an $\epsilon$-greedy approach.
 - **80% of the time:** It acts greedily (highest Q-value).
 - **20% of the time:** It acts randomly.
 - **Use Case:** The best of both worlds. It heavily leverages its knowledge while still occasionally deviating to explore the map and potentially discover better paths.
-
-## ⚙️ Control Panel Tuning
-
-While running the simulation, you can also modify the learning parameters dynamically:
-- **Alpha ($\alpha$):** The learning rate (e.g., 0.3). Higher values make the agent quickly adopt new information, while lower values make it learn slower but remember older information longer.
-- **Gamma ($\gamma$):** The discount factor (e.g., 0.5). Higher values make the agent care more about long-term future rewards, while lower values make it focus on immediate, short-term rewards.

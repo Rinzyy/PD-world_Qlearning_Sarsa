@@ -1,0 +1,38 @@
+{
+  "experiment_id": 2,
+  "seed": 7,
+  "terminal_hits": 38,
+  "episodes_completed": 38,
+  "final_cumulative_reward": 8296.0,
+  "available_snapshots": [
+    "final",
+    "first_full_dropoff",
+    "first_terminal"
+  ],
+  "config": {
+    "alpha": 0.3,
+    "gamma": 0.5,
+    "total_steps": 8000,
+    "seed": 7,
+    "learner": "Q_LEARNING",
+    "schedule": [
+      [
+        1,
+        200,
+        "PRANDOM"
+      ],
+      [
+        201,
+        8000,
+        "PEXPLOIT"
+      ]
+    ],
+    "experiment_id": 2
+  },
+  "snapshot_steps": {
+    "first_full_dropoff": 272,
+    "first_terminal": 538,
+    "final": 8000
+  },
+  "episode_in_progress_length": 119
+}
